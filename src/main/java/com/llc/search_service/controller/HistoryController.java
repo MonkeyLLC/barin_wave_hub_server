@@ -1,13 +1,13 @@
 package com.llc.search_service.controller;
 
 import com.llc.search_service.controller.model.request.SearchHistoryRequest;
+import com.llc.search_service.controller.model.response.DownloadHistoryResponse;
 import com.llc.search_service.controller.model.response.SearchHistoryResponse;
 import com.llc.search_service.domain.auth.AuthUser;
 import com.llc.search_service.model.response.R;
 import com.llc.search_service.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
@@ -49,5 +49,18 @@ public class HistoryController {
     public R<List<String>> hot() {
         return R.ok(historyService.hot());
     }
+
+    @GetMapping("download")
+    @Operation(method = "GET", summary = "下载记录")
+    public R<DownloadHistoryResponse> downloadList(@AuthenticationPrincipal AuthUser user, @RequestParam Integer page) {
+        return R.ok(historyService.downloadList(user.getId(), page));
+    }
+
+    @PutMapping("view")
+    @Operation(method = "PUT", summary = "记录查看")
+    public R<Boolean> view(@AuthenticationPrincipal AuthUser user, @RequestParam Integer paperId) {
+        return R.ok(historyService.view(user.getId(), paperId));
+    }
+
 
 }

@@ -30,4 +30,14 @@ public enum DocType {
             default -> null;
         };
     }
+
+    public static DocType getType(Integer type) {
+        return switch (type) {
+            case 1 -> WORDS;
+            case 2 -> PDF;
+            case 3-> PPT;
+            case 4 -> ZIP;
+            default -> null;
+        };
+    }
 }

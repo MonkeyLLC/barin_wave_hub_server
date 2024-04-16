@@ -3,9 +3,14 @@ package com.llc.search_service.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.llc.search_service.constants.RedisConstants;
+import com.llc.search_service.controller.model.response.DownloadHistoryResponse;
 import com.llc.search_service.controller.model.response.SearchHistoryResponse;
+import com.llc.search_service.entity.DownloadHistory;
 import com.llc.search_service.entity.SearchHistory;
+import com.llc.search_service.entity.ViewHistory;
+import com.llc.search_service.mapper.DownloadHistoryMapper;
 import com.llc.search_service.mapper.SearchHistoryMapper;
+import com.llc.search_service.mapper.ViewHistoryMapper;
 import com.llc.search_service.service.HistoryService;
 import com.llc.search_service.utlis.Md5Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +29,17 @@ import java.util.concurrent.TimeUnit;
 public class HistoryServiceImpl implements HistoryService {
     private final SearchHistoryMapper searchHistoryMapper;
     private final RedisTemplate<String, String> redisTemplate;
+    private final DownloadHistoryMapper downloadHistoryMapper;
+    private final ViewHistoryMapper viewHistoryMapper;
 
     public HistoryServiceImpl(SearchHistoryMapper searchHistoryMapper,
-                              RedisTemplate<String, String> redisTemplate) {
+                              RedisTemplate<String, String> redisTemplate,
+                              DownloadHistoryMapper downloadHistoryMapper,
+                              ViewHistoryMapper viewHistoryMapper) {
         this.searchHistoryMapper = searchHistoryMapper;
         this.redisTemplate = redisTemplate;
+        this.downloadHistoryMapper = downloadHistoryMapper;
+        this.viewHistoryMapper = viewHistoryMapper;
     }
 
     @Override
@@ -48,9 +59,9 @@ public class HistoryServiceImpl implements HistoryService {
         List<String> histories = new ArrayList<>();
         for (SearchHistory record : selectPage.getRecords()) {
             histories.add(record.getQuery());
-           //SearchHistoryResponse.SearchHistory searchHistory = new SearchHistoryResponse.SearchHistory();
-           //BeanUtils.copyProperties(record, searchHistory);
-           //searchHistories.add(searchHistory);
+            //SearchHistoryResponse.SearchHistory searchHistory = new SearchHistoryResponse.SearchHistory();
+            //BeanUtils.copyProperties(record, searchHistory);
+            //searchHistories.add(searchHistory);
         }
         searchHistoryResponse.setItems(histories.stream().distinct().toList());
 
@@ -84,5 +95,27 @@ public class HistoryServiceImpl implements HistoryService {
         List<String> hots = searchHistoryMapper.selectTop5GroupByQueryOrderByCount();
         hots = hots.stream().distinct().toList();
         return hots;
+    }
+
+    @Override
+    public DownloadHistoryResponse downloadList(Integer userId, Integer page) {
+        Page<DownloadHistory> ppage = new Page<>(page, 10);
+        LambdaQueryWrapper<DownloadHistory> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DownloadHistory::getUserId, userId).orderByDesc(DownloadHistory::getCreatedAt);
+        Page<DownloadHistory> selectPage = downloadHistoryMapper.selectPage(ppage, queryWrapper);
+        DownloadHistoryResponse downloadHistoryResponse = new DownloadHistoryResponse();
+        downloadHistoryResponse.setTotal(selectPage.getTotal());
+        downloadHistoryResponse.setItems(selectPage.getRecords());
+        return downloadHistoryResponse;
+    }
+
+    @Override
+    public Boolean view(Integer userId, Integer paperId) {
+        ViewHistory viewHistory = new ViewHistory();
+        viewHistory.setUserId(userId);
+        viewHistory.setPaperId(paperId);
+        viewHistory.setCreatedAt(LocalDateTime.now());
+        viewHistoryMapper.insert(viewHistory);
+        return true;
     }
 }

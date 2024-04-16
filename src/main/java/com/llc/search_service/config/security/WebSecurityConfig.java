@@ -55,6 +55,7 @@ public class WebSecurityConfig {
 
     private final String[] AUTH_WHITELIST = {
             // -- swagger ui
+          /*  "/swagger-ui/**",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -63,10 +64,10 @@ public class WebSecurityConfig {
             "/swagger-ui.html",
             "/webjars/**",
             "/csrf",
-            "/",
             "/csrf",
             "/search/**",
-            "/history/hot",
+            "/history/hot",*/
+            "/**"
     };
 
     @Bean
