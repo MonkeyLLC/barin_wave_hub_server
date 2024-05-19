@@ -66,11 +66,5 @@ logging:
     org.springframework.boot.env.PropertySourcesLoader: TRACE
     org.springframework.cloud.config.server: DEBUG
     com.sciradar: DEBUG
-aliyun:
-  oss:
-    endpoint: https://oss-cn-beijing.aliyuncs.com
-    access-key-id: LTAI5t7U7ttKKNV7u1cHbkSf
-    access-key-secret: uiJbvCpBxUAA8wo4GlajyIbp8YHhKl
-    bucket-name: zhiyun-resource-service
 
 
