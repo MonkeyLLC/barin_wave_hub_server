@@ -17,7 +17,8 @@ public enum FieldMapping {
     CITY("城市", "root.city", "root.city.keyword"),
     DISTRICT("区县", "root.district", "root.district.keyword"),
     SCENE("适用场景", "scene", "scene.keyword"),
-    VIEW_COUNT("浏览量", "view_count", "view_count");
+    VIEW_COUNT("浏览量", "view_count", "view_count"),
+    TEXT_BOOK("教材版本", "text_book", "text_book.keyword");
 
 
     public static FieldMapping getFiled(String name) {

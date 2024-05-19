@@ -47,8 +47,11 @@ public class CollectController {
 
     @PostMapping("/is-collect")
     @Operation(method = "POST", summary = "是否收藏")
-    public R<Map<Integer,Boolean>> isCollect(@AuthenticationPrincipal AuthUser user, @RequestBody List<Integer> paperIds) {
-        Map<Integer,Boolean> isCollect = collectService.isCollect(user.getId(), paperIds);
+    public R<Map<Integer, Boolean>> isCollect(@AuthenticationPrincipal AuthUser user, @RequestBody List<Integer> paperIds) {
+        if (user == null) {
+            return R.ok();
+        }
+        Map<Integer, Boolean> isCollect = collectService.isCollect(user.getId(), paperIds);
         return R.ok(isCollect);
     }
 }

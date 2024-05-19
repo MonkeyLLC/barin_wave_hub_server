@@ -18,5 +18,7 @@ public class Collect {
 
     private String paperName;
 
+    private Integer docType;
+
     private LocalDateTime createdAt;
 }

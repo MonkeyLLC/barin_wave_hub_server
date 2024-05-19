@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.llc.search_service.controller.model.request.UploadRequest;
+import com.llc.search_service.controller.model.response.UploadedResponse;
+import com.llc.search_service.domain.auth.AuthUser;
 import com.llc.search_service.entity.Paper;
+import com.llc.search_service.entity.Upload;
 import com.llc.search_service.service.ImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +18,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,9 +109,42 @@ public class ImportController {
     @Operation(method = "PUT", summary = "导入单条数据")
     public String importSingleData(Paper paper, @RequestPart MultipartFile file) {
 
-        return importService.importSingle(paper,file);
+        return importService.importSingle(paper, file);
 
     }
 
+    /**
+     * 分类：年级，学科，题型，难度进行分类。
+     * @param user
+     * @param request
+     * @param file
+     * @return
+     */
+
+    @PutMapping("test")
+    @Operation(method = "PUT", summary = "导入单条数据")
+    public String uploadSingle(@AuthenticationPrincipal AuthUser user, UploadRequest request, @RequestPart MultipartFile file) {
+
+        log.info("接收到文件，文件名：{}", file.getOriginalFilename());
+
+        importService.upload(user, request, file);
+        return null;
+
+    }
+
+
+    @GetMapping("record")
+    @Operation(method = "GET", summary = "获取上传记录")
+    public UploadedResponse getUploadRecord(@AuthenticationPrincipal AuthUser user, Integer page) {
+        Integer userId = user.getId();
+        return importService.getUploadRecord(userId, page);
+    }
+
+    @PostMapping("record")
+    @Operation(method = "POST", summary = "上传记录")
+    public void uploadRecord(@AuthenticationPrincipal AuthUser user, String name) {
+        Integer paperId = 999;
+        importService.uploadRecord(user.getId(), paperId, name);
+    }
 
 }

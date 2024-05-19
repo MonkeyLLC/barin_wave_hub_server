@@ -3,7 +3,7 @@ package com.llc.search_service.config.security;
 import com.llc.search_service.domain.auth.CustomAuthenticationEntryPoint;
 import com.llc.search_service.domain.handler.CustomAuthenticationFailureHandler;
 import com.llc.search_service.domain.handler.CustomAuthenticationSuccessHandler;
-import com.llc.search_service.domain.handler.JsonUsernamePasswordAuthenticationFilter;
+import com.llc.search_service.domain.auth.JsonUsernamePasswordAuthenticationFilter;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +31,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity

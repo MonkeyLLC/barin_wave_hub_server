@@ -17,5 +17,7 @@ public class DownloadHistory {
 
     private String paperName;
 
+    private Integer docType;
+
     private LocalDateTime createdAt;
 }

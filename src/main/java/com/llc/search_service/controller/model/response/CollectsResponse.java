@@ -18,5 +18,7 @@ public class CollectsResponse {
         private Integer paperId;
 
         private String paperName;
+
+        private Integer docType;
     }
 }

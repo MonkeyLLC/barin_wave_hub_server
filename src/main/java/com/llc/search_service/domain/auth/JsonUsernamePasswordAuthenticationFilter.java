@@ -1,4 +1,4 @@
-package com.llc.search_service.domain.handler;
+package com.llc.search_service.domain.auth;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

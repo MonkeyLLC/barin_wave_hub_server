@@ -15,6 +15,12 @@ public class SearchPaperRequest {
     private Integer size = 10;
     private String sort;
     private String gradeCategory;
+    private String version;
+    private String textBook;
+    private String province;
+    private String city;
+    private String scene;
+
     private SortOrder order;
     private List<Filter> filter;
     private List<Agg> aggs;

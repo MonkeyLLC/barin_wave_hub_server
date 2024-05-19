@@ -69,6 +69,8 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public List<String> read(Integer id, ReaderRequest request) {
+
+
         String name = request.getName();
         String fileUrl = request.getPath();
         String md5 = Md5Utils.stringToMD5(name + id);
@@ -82,6 +84,8 @@ public class ReaderServiceImpl implements ReaderService {
                 if (!file.getParentFile().exists()) {
                     FileUtils.createParentDirectories(file);
                 }
+            } else {
+                return listFilesInDirectory(file.getParent(), id);
             }
         } catch (IOException e) {
             log.error("创建文件失败", e);
@@ -117,6 +121,21 @@ public class ReaderServiceImpl implements ReaderService {
         return imagesPaths;
     }
 
+    private List<String> listFilesInDirectory(String directoryPath, Integer id) {
+        List<String> filePaths = new ArrayList<>();
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String name = "/src/assets/data/output/" + id + "/" + file.getName();
+                    filePaths.add(name);
+                }
+            }
+        }
+        return filePaths;
+    }
+
     public List<String> convertPDFToImages(String inputFilePath, String outputImagePathPrefix) {
         List<String> imagesPaths = new ArrayList<>();
         try (PDDocument document = PDDocument.load(new File(inputFilePath))) {
@@ -130,7 +149,7 @@ public class ReaderServiceImpl implements ReaderService {
 
 
                     Path source = Paths.get(outputImagePath);
-                    Path target = Paths.get("D:/llc/code/vue-elment-plus-demo-01/src/assets/" + outputImagePath);
+                    Path target = Paths.get("D:/llc/brian_wave_hub/brain_wave_hub_front/src/assets/" + outputImagePath);
                     Path targetDirPath = Paths.get(target.toString());
                     if (!Files.exists(targetDirPath)) {
                         Files.createDirectories(targetDirPath);

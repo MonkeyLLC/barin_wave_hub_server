@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,6 +17,7 @@ import java.util.Date;
 
 @TableName("paper")
 @Data
+@Builder
 public class Paper {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
@@ -53,9 +55,9 @@ public class Paper {
 
     private Integer downloadCount;
     @JsonProperty("upload_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate uploadTime;
+    /*@DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")*/
+    private Date uploadTime;
 
     private String url;
     @JsonProperty("is_vip")

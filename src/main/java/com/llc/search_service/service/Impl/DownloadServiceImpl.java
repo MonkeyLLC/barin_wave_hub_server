@@ -4,21 +4,19 @@ import com.llc.search_service.controller.model.request.SearchPaperRequest;
 import com.llc.search_service.controller.model.response.SearchResultResponse;
 import com.llc.search_service.entity.DownloadHistory;
 import com.llc.search_service.entity.EsPaper;
-import com.llc.search_service.entity.Paper;
 import com.llc.search_service.mapper.DownloadHistoryMapper;
-import com.llc.search_service.mapper.EsMapper;
 import com.llc.search_service.model.DocType;
 import com.llc.search_service.model.FieldMapping;
 import com.llc.search_service.service.DownloadService;
 import com.llc.search_service.service.SearchService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,10 +36,7 @@ public class DownloadServiceImpl implements DownloadService {
     @Override
     public void download(Integer userId, Integer paperId, HttpServletResponse response) {
 
-        SearchPaperRequest request = new SearchPaperRequest();
-        request.setField(FieldMapping.ID.getFiled());
-        request.setQuery(String.valueOf(paperId));
-        SearchResultResponse search = searchService.search(request);
+        SearchResultResponse search = searchService.searchById(paperId);
         List<EsPaper> hits = search.getHits();
 
         if (hits.isEmpty()) {
@@ -93,10 +88,7 @@ public class DownloadServiceImpl implements DownloadService {
         downloadHistory.setUserId(userId);
         downloadHistory.setPaperId(paperId);
 
-        SearchPaperRequest request = new SearchPaperRequest();
-        request.setField(FieldMapping.ID.getFiled());
-        request.setQuery(String.valueOf(paperId));
-        SearchResultResponse search = searchService.search(request);
+        SearchResultResponse search = searchService.searchById(paperId);
         List<EsPaper> hits = search.getHits();
         if (hits.isEmpty()) {
             return;
@@ -104,6 +96,8 @@ public class DownloadServiceImpl implements DownloadService {
         String paperName = hits.get(0).getName();
 
         downloadHistory.setPaperName(paperName);
+        downloadHistory.setDocType(hits.get(0).getDocType());
+        downloadHistory.setCreatedAt(LocalDateTime.now());
 
         downloadHistoryMapper.insert(downloadHistory);
 

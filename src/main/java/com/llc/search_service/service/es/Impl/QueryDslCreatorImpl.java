@@ -35,22 +35,38 @@ public class QueryDslCreatorImpl implements QueryDslCreator {
         int from = (request.getPage() - 1) * request.getSize();
         from = Math.max(from, 0);
 
-        if (!StringUtils.hasText(request.getField()) || !StringUtils.hasText(request.getQuery())) {
+
+        FieldMapping fieldMapping = FieldMapping.getFiled(request.getField());
+
+        String query = request.getQuery();
+
+        if (!StringUtils.hasText(request.getField()) || !StringUtils.hasText(query)) {
             queryBuilder = QueryBuilders.matchAllQuery();
         } else {
-            FieldMapping fieldMapping = FieldMapping.getFiled(request.getField());
-
-            String query = request.getQuery();
-
             queryBuilder = QueryBuilders.matchQuery(fieldMapping.getFiled(), query);
-
-            queryBuilder = handleExpense(queryBuilder, request.getExpense());
-
-            queryBuilder = handleGradeCategory(queryBuilder, request.getGradeCategory());
-
-            queryBuilder = handleFilter(queryBuilder, request);
-
         }
+
+        queryBuilder = handleExpense(queryBuilder, request.getExpense());
+
+        queryBuilder = handleGradeCategory(queryBuilder, request.getGradeCategory());
+
+        if (StringUtils.hasText(request.getScene())) {
+            queryBuilder = handleFiled(queryBuilder, FieldMapping.SCENE, request.getScene());
+        }
+        if (StringUtils.hasText(request.getProvince())) {
+            queryBuilder = handleFiled(queryBuilder, FieldMapping.PROVINCE, request.getProvince());
+        }
+        if (StringUtils.hasText(request.getCity())) {
+            queryBuilder = handleFiled(queryBuilder, FieldMapping.CITY, request.getCity());
+        }
+        if (StringUtils.hasText(request.getVersion())) {
+            queryBuilder = handleFiled(queryBuilder, FieldMapping.VERSION, request.getVersion());
+        }
+
+
+        queryBuilder = handleFilter(queryBuilder, request);
+
+
         sourceBuilder.query(queryBuilder).from(from).size(request.getSize());
 
         sourceBuilder = createAgg(sourceBuilder, request.getAggs());
@@ -64,6 +80,13 @@ public class QueryDslCreatorImpl implements QueryDslCreator {
         }
 
         return sourceBuilder;
+    }
+
+
+    private QueryBuilder handleFiled(QueryBuilder queryBuilder, FieldMapping fieldMapping, String query) {
+        MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(fieldMapping.getFiled(), query);
+        queryBuilder = QueryBuilders.boolQuery().must(queryBuilder).must(matchQueryBuilder);
+        return queryBuilder;
     }
 
     private QueryBuilder handleGradeCategory(QueryBuilder queryBuilder, String gradeCategory) {

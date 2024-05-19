@@ -2,13 +2,11 @@ package com.llc.search_service.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.llc.search_service.controller.model.request.SearchPaperRequest;
 import com.llc.search_service.controller.model.response.CollectsResponse;
 import com.llc.search_service.controller.model.response.SearchResultResponse;
 import com.llc.search_service.entity.Collect;
 import com.llc.search_service.entity.EsPaper;
 import com.llc.search_service.mapper.CollectMapper;
-import com.llc.search_service.model.FieldMapping;
 import com.llc.search_service.service.CollectService;
 import com.llc.search_service.service.SearchService;
 import org.springframework.beans.BeanUtils;
@@ -42,19 +40,18 @@ public class CollectServiceImpl implements CollectService {
             return false;
         }
 
-        SearchPaperRequest request = new SearchPaperRequest();
-        request.setField(FieldMapping.ID.getFiled());
-        request.setQuery(String.valueOf(paperId));
-        SearchResultResponse search = searchService.search(request);
+        SearchResultResponse search = searchService.searchById(paperId);
         List<EsPaper> hits = search.getHits();
         if (hits.isEmpty()) {
             return false;
         }
         String paperName = hits.get(0).getName();
+        Integer docType = hits.get(0).getDocType();
 
         Collect collect = new Collect();
         collect.setUserId(userId);
         collect.setPaperName(paperName);
+        collect.setDocType(docType);
         collect.setPaperId(paperId);
         collect.setCreatedAt(LocalDateTime.now());
         collectMapper.insert(collect);

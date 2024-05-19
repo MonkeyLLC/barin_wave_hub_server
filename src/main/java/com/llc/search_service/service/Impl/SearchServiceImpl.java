@@ -8,6 +8,7 @@ import com.llc.search_service.entity.EsPaper;
 import com.llc.search_service.model.Agg;
 import com.llc.search_service.model.AggResult;
 import com.llc.search_service.model.BucketTermsAggResult;
+import com.llc.search_service.model.FieldMapping;
 import com.llc.search_service.service.SearchService;
 import com.llc.search_service.service.es.QueryDslCreator;
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +133,14 @@ public class SearchServiceImpl implements SearchService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public SearchResultResponse searchById(Integer id) {
+        SearchPaperRequest searchPaperRequest = new SearchPaperRequest();
+        searchPaperRequest.setQuery(String.valueOf(id));
+        searchPaperRequest.setField(FieldMapping.ID.getFiled());
+        return search(searchPaperRequest);
     }
 
     private SearchResponse quadraticSearch(String query) {

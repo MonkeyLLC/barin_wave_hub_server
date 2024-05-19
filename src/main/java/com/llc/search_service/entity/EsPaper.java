@@ -48,9 +48,9 @@ public class EsPaper {
 
     private Integer downloadCount;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonProperty("upload_time")
-    private LocalDate uploadTime;
+/*    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("upload_time")*/
+    private Date uploadTime;
 
     private String url;
     @JsonProperty("is_vip")

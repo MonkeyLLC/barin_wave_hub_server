@@ -29,10 +29,15 @@ public class SearchController {
         return R.ok(searchService.search(request));
     }
 
-
     @Operation(method = "GET", summary = "查询总数", description = "查询总数")
     @GetMapping("/count")
     public R<Long> count() {
         return R.ok(searchService.count());
+    }
+
+    @GetMapping("{id}")
+    @Operation(method = "GET", summary = "根据id查询", description = "根据id查询")
+    public R<SearchResultResponse> searchById(@PathVariable Integer id) {
+        return R.ok(searchService.searchById(id));
     }
 }

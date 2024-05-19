@@ -1,0 +1,76 @@
+server:
+  port: 6601
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/brain_wave_hub?serverTimeZone=UTC&useUnicode=true&characterEncoding=UTF-8&useSSL=false&&autoReconnect=true
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 15000
+      idle-timeout: 30000
+      max-lifetime: 950000
+      maximum-pool-size: 30
+      minimum-idle: 10
+      pool-name: HikariCP
+      validation-timeout: 1000
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1
+      password: 0
+      lettuce:
+        pool:
+          min-idle: 5
+          max-idle: 10
+        shutdown-timeout: 100ms
+  servlet:
+    multipart:
+      max-request-size: 500MB
+      max-file-size: 50MB
+
+  mvc:
+    pathmatch:
+      #??????????????spring boot?swagger????????
+      matching-strategy: ant_path_matcher
+
+
+mybatis-plus:
+  mapper-locations: classpath:/xml/*Mapper.xml
+  typeAliasesPackage: com.llc.search_service.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+search-service:
+  cache:
+    enable: false
+    timeout: 86400
+  elasticsearch:
+    index: paper
+    timeout: 180000
+    nodes:
+      - host: localhost
+        port: 9200
+        protocol: http
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org.springframework.boot.env.PropertySourcesLoader: TRACE
+    org.springframework.cloud.config.server: DEBUG
+    com.sciradar: DEBUG
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    access-key-id: LTAI5t7U7ttKKNV7u1cHbkSf
+    access-key-secret: uiJbvCpBxUAA8wo4GlajyIbp8YHhKl
+    bucket-name: zhiyun-resource-service
+
+

@@ -8,4 +8,6 @@ public interface SearchService {
     SearchResultResponse search(SearchPaperRequest request);
 
     long count();
+
+    SearchResultResponse searchById(Integer id);
 }
